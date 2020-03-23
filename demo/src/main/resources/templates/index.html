@@ -1,0 +1,59 @@
+<html xmlns:th="https://www.thymeleaf.org/">
+<head>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+	integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+	crossorigin="anonymous">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body style="background-color: floralwhite">
+	<div class="container">
+		<h1 style="color: deepskyblue">Mars Photos from NASA</h1>
+		<form method="get" action="" id="roverTypeForm">
+			<input type="hidden" th:field="${marsAPIRequest.roverType}">
+			<div class="btn-group" role="group">
+				<button type="button" class="btn btn-secondary btn-rover"
+					onclick="selectRoverType('curiosity')" id="curiosity">Curiosity</button>
+				<button type="button" class="btn btn-secondary btn-rover"
+					onclick="selectRoverType('opportunity')" id="opportunity">Opportunity</button>
+				<button type="button" class="btn btn-secondary btn-rover"
+					onclick="selectRoverType('spirit')" id="spirit">Spirit</button>
+			</div>
+			<div class="row">
+				<label for="marsSol"
+					class="col-sm-3 col-form-label col-form-label-lg">Mars Sol
+					(Mars Day):</label> <input type="number" id="marsSol" min="0"
+					class="col-sm-1 form-control form-control-sm"
+					style="margin: 0.5em 1em" th:field="${marsAPIRequest.marsSol}" />
+			</div>
+			<div class="form-check" th:each="camera : *{marsAPIRequest.cameras.entrySet()}">
+				<input class="form-check-input" type="checkbox"
+					th:field="*{marsAPIRequest.cameras[__${camera.key}__]}" th:attr="disabled=${#lists.contains(validCameras.get(marsAPIRequest.roverType),camera.key)? 'false' : 'disabled'}"> <label class="form-check-label"
+					th:for="'cameras'+${camera.key}+'1'" th:text="${camera.key}"></label>
+			</div>
+			<button type="submit" class="btn btn-primary" style="margin-top: 1em">Submit</button>
+		</form>
+		<div class="row"
+			th:each="index : ${#numbers.sequence(0, marsResponse.photos.size()-1, 4)}"
+			style="margin-top: 1em">
+			<div class="col-sm-3">
+				<img th:src="${marsResponse.photos[index].imgSrc}" class="img-fluid" />
+			</div>
+			<div class="col-sm-3" th:if="${index+1 < marsResponse.photos.size()}">
+				<img th:src="${marsResponse.photos[index+1].imgSrc}"
+					class="img-fluid" />
+			</div>
+			<div class="col-sm-3" th:if="${index+2 < marsResponse.photos.size()}">
+				<img th:src="${marsResponse.photos[index+2].imgSrc}"
+					class="img-fluid" />
+			</div>
+			<div class="col-sm-3" th:if="${index+3 < marsResponse.photos.size()}">
+				<img th:src="${marsResponse.photos[index+3].imgSrc}"
+					class="img-fluid" />
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="/js/index.js"></script>
+</body>
+</html>
